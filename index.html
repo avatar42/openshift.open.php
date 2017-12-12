@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html><head><title>WP Whois Proxy Installation Page</title>
+<style type="text/css"><!-- 
+body { margin:4em; font-family:sans-serif; }
+--></style>
+</head><body bgcolor="white">
+
+<h1><a href="http://wp-whois.proxy.sf.net">WP Whois Proxy</a> Installation</h1>
+
+<p>
+Since you are reading this, you have successfully uncompressed the tarball for wp.cgi. 
+<br>So far so good.. :)
+
+</p><p>
+Now, edit all *.cgi files to get the right hashbang incantation for your perl interpreter
+<br>(e.g. #!/usr/local/bin/perl -w  -- the default is /usr/bin/perl -w).
+
+
+</p><p>
+Next, move the files to the appropriate places for your web server. 
+<br>Also make sure messages.[your_language].pm is located
+in cgi-bin/languages.
+
+</p><p>
+Then, configure the program for your system with
+<a href="./cgi-bin/wp_config.cgi">wp_config.cgi</a>. 
+<br>Then it is highly recommended that you move it somewhere safe.
+
+</p><p>
+You may also want enable Access Control and Caching
+if you have the necessary perl modules (see wp-install-doc.html).
+
+</p><p>
+A shell script to do the install for you will be written someday, but you'll
+just have to be patient.. ;)
+</p>
+
+<p> -- jb 26 Mar 2004 </p> <!-- prev: 05 Oct 2003  prev: 10 Aug 2002 -->
+</body></html>

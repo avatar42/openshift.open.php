@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml-stylesheet href="/wp_style.css" type="text/css" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head><title>Changes to WP.cgi</title> <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><meta name="robots"  content="index" />
+<link rel="stylesheet" type="text/css" media="screen" href="/wp_style.css" /><link rel="stylesheet" type="text/css" media="print" href="/wp_print.css" />
+<style type="text/css">body,h1,h2,ul.li { font-family:sans-serif; }
+body { margin:2.0em; color:white; background:black; }
+h1 { color:#060; background:#ded; padding:1.00em; font-size:1.5em;}
+h2 { color:#060; background:#efe; padding:0.25em; font-size:1.1em;}
+li { font-size: 0.90em; color:black;background:white; }
+.content {color:black; background:white; padding:1.0em; margin: 1em 8em 1em 8em;}
+</style>
+</head><body>	
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+<div class="content">
+<h2>wp.cgi  CHANGE Log</h2>
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+<h3>Version <big>1.3.2</big> - <small>23 Apr 2004 by John Bro bro(at)users(.)sourceforge(.)net</small></h3>
+
+ <ul><li> tweaked socket calls to add a switch for whois.DeNic.DE (sigh..) 
+</li><li> fixed an ugly typo in wp_config.cgi (line 138).
+</li><li> restored a line (thought redundant) to add /e to non-jp JpNic queries 
+</li><li> tweaks to AccessDenied: no html if cmdline,
+</li><li> added ACCESS_DENIED message to messages.*.pm
+</li><li> fixed error in list of Reserved IP Ranges (83/8 -> RIPE)
+</li><li> blocking calls to rwhois.twtelecom.net (crummy results)
+</li><li> added several new trash boundaries to ZapTrash.config
+</li><li> added .gov to Trimmed Domains (only answers for dom.tld)
+</li><li> added TrashBoundaries for .gov (which is RFC-Ignorant too!)
+
+</li></ul>
+
+<h3>Version <big>1.3.1.2</big> - <small>19 Jan 2004 </small></h3>
+
+ <ul><li> Just after uploading 1.3.1, I caught a flaw in the logic of TrimDomains() 
+<br /> which was failing to strip a 3rd level dom name and requery on DOM.TLD
+<br /> Reduced min level by 1, and added a control loop to prevent infinit loops.
+</li></ul>
+
+<h3>Version <big>1.3.1</big> - <small>18 Jan 2004 </small></h3>
+
+ <ul><li>Bug fixes:
+	 <ul><li>fixed error detecting whois port (for OSX)
+	</li><li>	restored ASN function (oops)			
+	</li><li>	fixed for caching multilingual output from whois servers			
+	</li><li>	fixed infinite loop on some queries requiring TrimDomain()
+	</li><li>	fixed mishandling of some error messages (str -> aryref)<br /><br />
+	</li></ul>
+</li><li>	short-circuit MakeLinks routines when a DOM is not found
+</li><li>	updates to whoislist and TrashBoundaries
+</li><li>	esthetic tweaks to wp_style.css and wp.tmpl
+</li><li>	some code cleanup
+</li><li>	TODO: catch "not found" when embedded in comments (currently Zapped with the Trash!)
+</li></ul> 
+
+
+<h3>Version 1.3.0 - <small>10 Nov 2003</small></h3>
+
+ <ul><li style="padding:0.5em;">
+	<b> WP goes multilingual!</b> 
+	<br/> English, German and French and Vietnamese (Thanks Dung!)
+
+  <ul style="padding:0.5em;"><li>
+ 		 WP is now i18n compatible! 
+	<br /> Default charset is now UTF-8 (was ISO-8859-1)		
+ 	<br /> WP extracts preferred languages from ENV{HTTP_ACCEPT_LANGUAGE}
+	<br /> and selects a language file to match (if we have one).
+ 	<br /> (Please contact us if you can translate about 45 strings into your native language.)
+
+	</li><li> If a language  is selected from the pulldown menu, WP then emits
+	<br /> a server header with the appropriate character encoding  (JP,KR,CN?), 
+	<br /> which may, however, conflict with your preferred language.
+</li></ul>
+
+</li><li style="padding-bottom:0.5em;"> 
+	Optional: <b>use Cache::FileCache</b>
+	<br /> (also requires module Log::Agent, Errors.pm, and module Storeable)
+	<br /> refresh time is configurable, default = 1 hour.
+	<br /> which should reduce load on both your server and the whois servers.
+<br />
+</li><li> Major revision to use of ZapTrash() 
+	<br /> done for all whois() results, not just final ones.
+	<br /> so that Disclaimers are not cached with the results if
+		Caching (and ZapTrash) are enabled.
+<br />
+</li><li> Arguments are now passed among subroutines as a hashref 
+	<br /> instead of strings or arrays.
+<br />
+</li><li> Many tweaks (and a few kludges) to improve performance in
+		Referral Server detection.
+<br />
+</li><li> Added routine to fall back on previous server's response
+	<br />	when the last server queried fails to respond.
+</li><li> Strengthened TrimDomains function - never bother with 5th-level domains and higher
+</li><li> Improved handling of language selection that understands 	language preference (value of 'q')
+<br />
+</li><li> Major code re-formatting (lines &lt;=80chars ;)
+
+</li></ul> 
+
+<hr /><!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
+ 
+<h3>Version 1.2.3 (cvs only) - <small>26 Sep 2003</small></h3>
+ <ul><li> New method of finding Referral Servers.
+</li><li> Restored ability to query rwhois servers when referred by nics
+</li><li> Beginning to enable i18n
+</li></ul>
+
+<h3>Version 1.2.2 - <small>23 Sep 2003 </small></h3>
+ <ul><li> IPCheck() reworked again. Now looks for ReferralServer, and ignores  nic-Handles
+		<br /> (which were starting to get us some false positives)
+		<br /> This also tends to minimize the number of queries to Arin.
+</li><li>
+</li><li> Added  '+' to all IP queries to Arin -- gets us past those pesky NET-nnn-nnn-nnn answers!
+</li><li> Alan: Improvements to .ORG lookups.
+</li><li> Brute-force matching on BR- in CheckHandle() to get to whois.registro.br
+</li><li> Tweaks to ZapTrash.config
+</li></ul> 
+
+<h3>Version 1.2.1 - <small>26 Apr 2003</small> </h3>
+
+ <ul><li> Distribution now contains 'wp.config.dist' instead of 'wp.config'
+ <br />	  to avoid overwriting your own wp.config when you update. (thanks to Robert)
+</li><li> Alan reworked IPCheck() to eliminate spurious socket calls to whois
+</li><li> John added reserved IPs to CheckType so we won't bother Iana.org
+</li><li> Robert added a new parameter in wp.config/wp_config.cgi: AlwaysAskAbuseNet
+</li><li> Abuse section marked up in a &lt;span id=&quot;abuseinformation&quot;&gt;
+</li><li> John: Interface update:  form is more compact
+<br />	  involves changes to wp.cgi, wp.tmpl and wp_style.css
+<br />	  Parameters are now passed to WhoisTemplate() in a hashref.
+</li><li> Removed whois-server pulldown menu
+<br />	  but only commented out in wp.tmpl, so easily re-enabled
+</li></ul>
+
+<h3>Version 1.2.0  <small> - 03 Apr 2003</small></h3>
+
+	<p>NEWS: Robert K. has joined the team!</p>
+	
+
+<ul><li>	Should now run out of the box on Windoze
+			( removed an eval { alarm... } )
+			<br />- Thanks, Rob!
+</li><li>	New TrashBoundaries in ZapTrash.config
+</li><li>	Added a few new whois servers to whoislist
+</li><li>	NicSpecificTweaks() revised and expanded
+</li><li>	Major revision to TrimDomains() to eliminate useless calls to Whois()  
+</li><li>	CheckHandles() and TagHandles() reworked (again!) 
+</li><li>   ProcessQuery() broken into 4 subfunctions so logic is clearer
+</li><li>	Quit trying to match on -AU and -AR handles (sigh..)
+</li><li>	Eliminated rwhois lookups
+</li><li>	Numerous small fixes to many other functions,
+			eliminating many lines of (useless) code!
+</li><li>	All in all, it should be generally faster and more efficient,
+			and much smarter.
+</li></ul>
+
+ <hr /><!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
+ 
+<h4>Version 1.1.5.3  <small>15 Mar 2003</small></h4>
+ <ul><li>	(unreleased) More fixes to ZapTrash and link generation
+ 			<br />(was choking on domains registered at whois.enom.com)
+</li></ul>
+
+<h4>Version 1.1.5.2  <small>10 Mar 2003</small></h4>
+
+	<p>NEWS: Alan F. has joined the team!</p>
+
+
+ <ul><li>	new CheckAccess() limits to $HitLimit per hour, 
+<br />		and denies access for $AccessReset minutes instead of hits per day
+
+</li><li>	Note: new CheckAccess() obsoletes acladmin.cgi and the cron job.
+<br />		Required a tweak to wp.tmpl so be sure to get it from
+			CVS if not grabbing the whole package.
+	
+</li><li>	Added an option to FilterHTML (using HTML::Parser)
+			to prevent x-site scripting attacks
+
+</li><li> 	Also now using POSIX library.
+</li></ul>
+
+<p> Thanks, Alan!</p>
+	
+ <ul><li>	Revised and expanded IPV6 lookups.
+ 
+</li><li>	Combined all (known) Nic Handles in a hash, now used by both
+<br />		CheckHandles() and TagHandles() 
+</li><li>	Reworked MakeLinks/TagHandles() (replaced TagParens()
+<br />		so more Nic handles get turned into clickable links with
+			far fewer false positives.
+			
+</li><li>	Revised rwhois detection
+
+</li><li>	Restored functionality of -d[1-4] (debug) switch on commandline.
+</li><li>	Additions of strings to %TrashBoundaries and %NotFoundResult
+<br />		(improves recursive stripping of nth-level domains)
+</li></ul>
+
+
+<h4>Version 1.1.5.1 <small> -   02 Mar 2003 </small></h4>
+
+ <ul><li> Fixed logging routine - moved from wp.config to wp.cgi itself.
+</li><li> Consequently had to modify wp_config.cgi as well.
+</li></ul>
+
+
+<h4>Version 1.1.5.0 <small> -   01 Mar 2003 by John Bro bro(at)users(.)sourceforge(.)net</small></h4>
+
+ <ul><li> Output now preserves white space better,
+<br />	  and monospace font (in wp_style.css) preserves the NICs formatting
+</li><li> ErrorLog has become a variable in wp.config (via wp_config.cgi)
+</li><li> and path to wp.config specified inside the BEGIN block for all 3 cgi's
+<br />    (defaults to './wp.config')
+</li><li> Debug is now a function
+</li><li> Lots of internal code cleanup
+</li></ul>
+
+
+<h4>Version 1.1.4.4 <small> -  14 Feb 2003</small></h4>
+
+ <ul><li> WP now properly obtains Whois Server for .ORG domains from whois.pir.org
+	<br />(PublicInterestRegistry.org) like it uses crsnic.net for .com etc.
+</li><li> Additions (new TrashBoundaries - now 55 servers) to ZapTrash.config 
+</li><li> whoislist uses whois.pir.org for .org lookups.
+</li></ul>
+
+
+<h4>Version 1.1.4.3 <small> -  25 Jan 2003</small></h4>
+
+ <ul><li> Incorporated new whoislist info, borrowed from <a href="http://www.linux.it/~md/software/">Marco d'Itri's whois</a>
+</li><li> Modified wp.cgi to display URLs and comments for TLDs that do NOT provide a whois service,
+<br />	but that are responsible for the TLD.
+</li><li> Updates made to ZapTrash.config
+</li></ul>
+
+<h4>Version 1.1.4.2</h4>
+
+<ul><li>  New <a href="./wp-install-doc.html">wp-install-doc.html</a> contributed by Josh Becket (thanks!)
+</li><li> acladmin.cgi finally supports ranges of ip numbers
+</li><li> revised html in acladmin.cgi <br />(mostly missing slashes like &lt;input .. /&gt;)
+</li><li> Added config option to specify stylesheet in wp_config.cgi
+</li><li> fixed bug in whoislist (spurious trailing slashes)
+</li></ul>
+ 
+<h4>Version 1.1.4.1 <small> -  3 Nov 2002 </small></h4>
+
+ <ul><li> Replaced function AskAbuseNet with one from John Levine, postmaster@abuse.net
+</li><li> more additions to ZapTrash.config and NoReply (recursive) function
+</li></ul>
+
+<h4>Version 1.1.4.0 <small> - 23 Oct 2002</small></h4>
+
+ <ul><li> All markup is now <b>XHTML 1.0 Strict</b>
+</li><li> NIC websites made clickable
+</li><li> updates to whoislist and ZapTrash.config
+</li></ul>
+
+<h4>Version 1.1.3.7</h4>
+ <ul><li> added several rwhois servers (thanks to Geektools.com)
+</li></ul>
+<h4>Version 1.1.3.6</h4> 
+
+ <ul><li> added strings for nic.at and domain-registry.nl to NotFoundResult hash
+</li><li> updates to whoislist
+</li><li> fixed an erroneous local reference to $Cfg in wp.cgi
+</li></ul>
+
+<h4>Version 1.1.3.5</h4>
+
+ <ul><li> removed a useless 'else' 
+</li><li> added a couple domains to ZapTrash
+</li></ul>
+
+<h4>Version 1.1.3.4</h4>
+ <ul><li> Restructured part of IPCheck() because Arin.net's reply
+	to queries for RIPE-allocated IP# was matching on APNIC.net.
+<br /> It is now written as an explicit if/elsif/else.
+</li></ul>
+
+<h4>Version 1.1.3.3</h4>
+ <ul><li> Adapted to new ARIN.net format
+</li><li> Removed $prfx from calls to whois for ARIN.net
+</li><li> Added -ARIN$ to list of handle suffixes
+</li></ul>
+<h4>Version 1.1.3.2</h4>
+ <ul><li>	Revised ZapTrash.config so it is easier to maintain.
+ 		<br />Single variable containing newline separated records,
+		with 3 tab-separated fields: server start-string endstring
+		<br />The function constructs its hash from this var.
+		<br />Now strips disclaimers from 43+ servers.
+		
+</li><li>	Updated whoislist (still compatible with the GeekTools' whoislist)
+
+</li><li>	Tweaks for nic.or.kr and added lacnic.net
+
+</li></ul>
+
+<h4>Version 1.1.3.1</h4>
+ <ul><li>	Adjusted wp.tmpl (html interface) so that only Opera
+		sees the big green WP logo floating on the right.
+		It seems that all (?) other browsers fail to
+		understand style=position:fixed. (sigh...)
+</li></ul>
+
+<h4>Version 1.1.3 - Aug 2002 </h4>
+ <ul><li>	Moved project to wp-whois-proxy.SourceForge.net
+</li><li>	added .edu to list of TLDs that do not recurse - only lookup 2LD
+</li><li> 	added 10 x.&lt;country&gt;.com domains to NicSpecificTweaks() 
+		which then are not stripped to 2LD but are found at centralnic.net
+</li><li>	Adjusted default config and download package to match
+		SourceForge structure (i.e. a ScriptAliased virtual domain)
+		<br />Previous tarballs assumed cgi-bin was under the DocumentRoot,
+		and could deliver non-cgi objects.
+</li><li>	Logs are all written to /var/tmp/wp/
+</li><li>	perl interpreter expected to be in /usr/bin (not /usr/local/bin)
+</li><li>	TODO: add more configurability to wp_config.cgi		
+</li></ul>
+
+
+<h4>Version 1.1.2</h4>
+ <ul><li>	fixed routines to recursively remove leftmost subdomain
+ 		if the whois server doesn't recognize it 
+		<br /> com/net/org TLDs are automatically stripped down to
+		Dom.TLD because none of the whois servers list 3rd level subdomains.
+
+</li><li>	minor cosmetic tweaks
+ </li></ul>
+
+<h4>Version 1.1</h4>
+ <ul><li>	combined templates whois.html &amp; whois-plain.html
+ 		into a function &amp;WhoisTemplate in whois.tmpl
+		which decides for itself which version of html to deliver.
+		
+</li><li>	fixed bug in wp_config.cgi ( was not updating checkboxes)
+
+</li><li>	 now that we have a web-configurable wp.config, all
+		 external files must exist (or be linked to) a dir in @INC
+		 if we want to run the program anywhere besides the current dir
+		 (e.g. on the command-line)
+
+</li></ul>
+
+<h4>Version 1.0 - 29 Jul 2002 <br />
+(Differences between wp.cgi &amp; GeekTools Whois proxy.cgi v.3.13)
+</h4>
+ <ul><li> 	wp.cgi use(s) strict and -w  but <i>NOT</i> -T (breaks!)
+ 
+ </li><li>	All configuration now in wp.config which is written by wp_config.cgi
+</li><li>	Writes out valid(ated) Html4.01 Strict + CSS (wp_style.css)
+	<br />	Browsers with version &lt;5 get no CSS (whois-plain.html)
+	
+</li><li>	All functions now take explicit inputs
+	<br />	and return explicit vars/refs
+	
+</li><li> 	LOGIC section totally restructured (hopefully more efficient)
+	<br />	ProcessQuery() defangs and classifies the QueryIn
+	<br />	and everything thereafter is based on $Type
+		
+</li><li>	All Whois() output is passed around in ArrayRef(s)
+
+</li><li>	multilevel Debug routines (will be removed in 1.2)
+	
+</li><li>	multilingual support (some) controlled from the html form 
+	<br />	strips multiling characters for English
+	<br />	will display Japanese Chinese,Korean
+	<br />	note: deleting [[:ascii:]] doesn't work..
+		
+</li><li>	Nic-Handle queries are mostly working .. 
+	<br />	Need more NICs in the (internal) db
+		
+</li><li>	Combined all IO::Socket calls into one Whois() function
+	<br />	- several new functions (eliminated several too)
+	<br />	- all output -&gt; ShowForm() now
+		
+</li><li>	Split DomainDig into several subfunctions 
+		so now DomDig is mostly just the logic..
+	
+</li><li>	Split MakeLinks similarly into subfunctions, too.
+	
+</li><li>	AbuseNet is now a checkbox (or -a on CL)
+
+</li><li>	added a lookup function DomIP() [IP &lt;--&gt; DomainName] -
+	<br />	handles Abuse requests on IP#s iff they have rDNS
+
+</li><li>	rewrote ZapTrash (eliminates verbose disclaimers) as an external function with a hash of boundaries:
+	<br />	configurable in ZapTrash.config where ZapTrash{Nic =>[BeginString,EndString]}
+	 <ul><li>	easy to maintain and expand
+	</li><li>	deletes non-ascii chars from output 
+		<br />	unless $Lang (-l) =Chinese, Korean or Japanese
+	</li></ul>
+
+</li><li> 	MakeLinks catches more links (but also more false positives..)
+
+</li><li>	combined CommandLine and CGI versions 
+	<br />	see ./wp.cgi -h
+</li></ul>
+
+</div><div class="content">
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+<h2> TESTED: on </h2>
+ <ul><li> linux (perl 5.6.1), 
+</li><li> AIX (perl 5.005003),
+</li><li> Digital Unix OSF1 alpha (perl 5.6.0), 
+</li><li> Windows (ActivePerl/Apache)
+</li></ul>
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+</div><div class="content">
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+<h2>KNOWN BUGS:</h2>
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+ <ul><li>	none
+</li></ul>
+
+</div><div class="content">
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+<h2>TODO:</h2>
+<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+ <ul><li>	untaint socket calls.. (what am I missing?)
+</li><li>	implement 'forced' queries ?
+</li><li>	CIDR conversions
+</li></ul>
+
+<p style="clear:both; text-align:center;">
+<a href="/">WP Home</a>	  	|
+<a href="/dl.php">Download</a>	|
+<a href="/wp-install-doc.html">Install</a>	|
+<a href="/whois_help.html">Help</a>	|
+<a href="/whois_faq.html">FAQ</a>	|
+<a href="/changes.html">CHANGES</a>	| 
+<a href="/feedback.html">Contact</a>	|
+<a href="/cgi-bin/gb.cgi">Guestbook</a>		
+</p>
+</div>
+
+<hr style="clear:both; height:10px; background:#cfc;" />
+<div><a href="http://jigsaw.w3.org/css-validator/check/referer"><img class="Valid" src="/images/vcss.png"  alt="Valid CSS!" /></a><a href="http://validator.w3.org/check/referer"><img class="Valid" src="/images/vxml.png"  alt="Valid XHTML1.0!" /></a></div>
+<p id="cprt"><small>Last modified Apr 23, 2004<br />Copyright &copy; 2004 John Bro &lt;bro <small>(at)</small> users <small>(dot)</small> sourceforge <small>(dot)</small> net&gt;</small></p>
+</body></html>

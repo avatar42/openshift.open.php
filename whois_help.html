@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml-stylesheet href="/wp_style.css" type="text/css" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head><title>Whois Help</title> <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><meta name="robots"  content="index" />
+<link rel="stylesheet" type="text/css" media="screen" href="/wp_style.css" /><link rel="stylesheet" type="text/css" media="print" href="/wp_print.css" />
+<style type="text/css">
+body { color:white; background:black; font-family:verdana,sans-serif; font-size:10pt;
+	margin:1.0em; width:500px; }
+p	{ color:black; background:white; font-family:verdana,sans-serif; font-size:10pt;
+	  margin:0; padding:0.5em 1.0em 0.5em 1.0em; text-align:justify; }
+h4	{ color:#060;  background:#ded;  font-family:verdana,sans-serif; font-size:12pt;
+	margin:0; padding:0.25em; }
+li	{ color:#000; background:#fff; font-family:verdana,sans-serif; font-size:10pt; padding:0 0 0 0.5em; margin:0; }
+.fmt { color:#009; background:#fff; font-family:sans-serif;	font-size:10pt; }
+.ex	{ color:#600; background:#fff; font-family:sans-serif;	font-size:10pt; }
+.ni	{ color:#666; background:#eee; font-family:serif; 	font-size:10pt; }
+#crd { color:#fff; background:#333; }
+</style>
+</head><body>
+<h3 class="center" id="top">
+	Types of WP Queries
+</h3>
+
+<p class="center">
+	Domains
+|	<a href="#ip">IP#s</a> 
+|	<a href="#han">Handles</a> 
+|	<a href="#ipv6">IPV6</a> 
+|	<a href="#obf">Obfuscated</a> 
+|	<a href="#asn">ASNs</a> 
+|	<a href="#fq">Other</a> 
+|	<a href="#abu">Abuse</a> 
+</p>
+
+<h4 id="dom">Domain Name</h4>
+<p>	<span class="fmt">Format:	(sub.dom.)domain.TLD</span>
+<br />	<span class="ex">e.g.:	sourceforge.net</span>
+<br />Domain names are the common, &quot;simple-for-a-human&quot; names used to identify
+locations within the Internet. Typically these are websites. A domain name is translated by
+the computer into an IP Address. Invalid or unassigned names are rejected.
+You must enter the TLD (top-level-domain), but queries on TLD-only
+(e.g. .com) are also rejected. 
+
+</p><p>
+All TLDs on the internet that run a whois server (on port 43)
+can (potentially) be queried, including all 250+ two-letter country codes 
+(ccTLDs), i.e. not just .com, .net, .org, etc. Unregistered names
+return &quot;No Registrar found for your_query.tld&quot;
+or sometimes &quot;No match for your_query.cctld&quot;
+
+</p><p>
+However, far too many ccTLDs do NOT run whois servers on port 43
+(as required by RFC954 - see <a href="http://www.rfc-ignorant.org">RFC-Ignorant.org</a>)
+Some do run web whois applications, others simply do <i>nothing!</i>. 
+WP will return URLs to their web servers or the closest thing to it if anything is known.
+
+</p><p><b>SubDomains</b>: Some sites accept subdomains, others (those that handle .net, .com, .org and .edu) do not.
+WP strips off subdomains for registrars known not to support them, and
+otherwise recursively removes them from the left one by one when they return
+&quot;not found&quot; until only domain.tld remains. In other words,
+you can enter &quot;www.sub.sub.domain.tld&quot;, and even if only
+&quot;domain.tld&quot; is registered, you <i>will</i> get your reply,
+along with the IP number that the name corresponds to.
+</p>
+
+<h4 id="ip"><a href="#top">IP Address</a></h4> 
+<p>	<span class="fmt">Format:	###.###.###.###</span>
+<br />	<span class="ex">e.g.:	204.74.78.12</span>
+<br />An Internet Protocol Address is a way to uniquely identify machines on the Internet.
+It is comprised of a standardized set of values separated by &quot;.&quot;s 
+Represented by these ### sections are a) the machine, b) the host, and c) network that it is on.
+Invalid (and unallocated ranges of) numbers are rejected out of
+hand. (See RFC3330 and RFC1700)
+<span class="ni">(currently only full dotted quads are supported)</span>
+
+</p><p>
+If the IP number has reverse-DNS (i.e. it maps back to a Domain Name),
+WP will return that name, too. 
+The IP number can be worth checking since the owner of the name
+and the hosting company responsible for the IP number are usually not the same people, 
+and when sending a spam complaint, you probably do <i>not</i> want to complain 
+to the owners of the spamvertised site. You probably want their service provider!
+</p>
+
+<h4 id="asn"><a href="#top">AS Numbers</a></h4>
+<p>	<span class="fmt">Format:	AS##### or #####</span>
+<br />	<span class="ex">e.g.:	AS12008 or 12008</span>
+<br />An Autonomous System (AS) is a group of IP networks operated by one or more network
+operator(s) which has a single and clearly defined external routing policy. An AS Number is
+used for the exchange of exterior routing information and as an identifier of the AS itself.
+Invalid ASNs are rejected. (See RFC1930)
+</p>
+
+<h4 id="han"><a href="#top">NIC Handle</a></h4>
+<p>	<span class="fmt">Format:	XX###</span>
+<br />	<span class="ex">e.g.: WGTR1-RIPE or	ARIN-FOO-BAR</span>
+<br /> A NIC Handle is a unique identifier assigned to each domain name record, contact
+record, and network record in a registrars domain name database. 
+
+</p><p>
+Originally handles were comprised of the contact's initials followed by a number.
+Now each registrar has employed its own system and it seems most of them don't work!
+However, clicking on a handle returned by WP (as a link) usually does. 
+Note that WP generally only tries handles known to be valid, e.g. for ARIN, RIPE, APNIC, (and NetSol).
+</p>
+
+<!-- Disabled/unimplemented
+<h4 id="hst">NIC Host Handle</h4>
+<p>	<span class="fmt">Format:	NS#####-HST</span>
+<br />	<span class="ex">e.g.:	NS36326-HST</span>
+<br />Direct search returning the first 50 matches for domain names registered under the
+host handle. Please note that the 50 match limit is imposed by the remote whois server not
+wp.cgi. In some instances the remote whois server may impose a smaller or larger match
+limit as well. 
+</p>
+-->
+
+<h4 id="fq"><a href="#top">Forced Queries</a> </h4>
+<p class="ni">(not implemented)</p>
+
+<!-- REIMPLEMENT?
+<p>	<span class="fmt">Format:	'query' destination</span>
+<br />	<span class="ex">e.g.:	smith ra</span>
+<br />
+
+Rather than searching automatically through the registries, it is possible to specify
+on which registry the query will be run. Valid options are continually changing and updating.
+You can try any that you like - at worst your query will fail. As of July 2002, wp.cgi
+was trying to provide:
+</p>
+ <ul><li>RA (whois.ra.net), 
+</li><li>ARIN or ASN (whis.arin.net), 
+</li><li>APNIC or AP (whois.apnic.net), 
+</li><li>AUNIC (whois.aunic.net), 
+</li><li>RIPE (whois.ripe.net), 
+</li><li>REGISTER (whois.register.com), 
+</li><li>NSI (whois.networksolutions.com), 
+</li><li>CRSNIC (whois.crsnic.net),
+</li><li>CORE (whois.corenic.net), 
+</li><li>6BONE (whois.6bone.net).
+</li></ul>
+--> 
+
+<h4 id="obf"><a href="#top">Obfuscated IP</a></h4>
+<p>	<span class="fmt">Format:	3427052297</span>
+<br />This is a 32 bit representation of the standard IP in octet notation (###.###.###.### ) 
+The obfuscated IP is simply created by multiplying the first block by 2^24, second block by 2^16,
+third block by 2^8 , and fourth block by 2^0. Add them up and you have your obfuscated IP
+address. (If the IP address looks reasonable, WP will then attempt a lookup on it.)
+</p>
+
+<h4 id="ipv6"><a href="#top">IPv6 / IPng</a></h4>
+<p>	<span class="fmt">Format:	hex:hex:hex:hex::#/##</span>
+<br />	<span class="ex">e.g.:	3ffe:017a:5b6c:3b1d::1/48</span>
+<br />	<span class="ni">(Currently only partially implemented.)</span>
+<br />This is the 128-bit representation of the 'next generation' of IP numbers.
+<br />WP attempts to verify the validity of the hexcode before
+querying (e.g.) whois.6bone.net, since only a very small range of such numbers will resolve.
+</p>
+
+<h4 id="abu"><a href="#top">ABUSE</a> (whois.abuse.net)</h4>
+<p>	<span class="fmt">Format: checkbox (or -a in commandline version)</span>
+<br />With this rewrite of WP, Abuse queries have become a checkbox.
+When checked, whois.abuse.net is queried for an address <i>if</i> the query
+is a domain name or an IP# that maps (rDNS) to a domain name. 
+That domain name is then looked up at Abuse.Net.
+
+</p><p>
+Abuse.Net returns the email address of the domain's abuse desk 
+if it has registered one. Otherwise, it returns &quot;postmaster&#64;(sub.)domain.tld&quot;.
+
+</p><p>
+Note: there is also a configuration option to <i>AlwaysAskAbuseNet</i>.
+</p>
+
+<p style="clear:both; text-align:center;">
+<a href="http://wp-whois-proxy.sourceforge.net/">WP Home</a>	  	|
+<a href="http://wp-whois-proxy.sourceforge.net/dl.php">Download</a>	|
+<a href="http://wp-whois-proxy.sourceforge.net/wp-install-doc.html">Install</a>	|
+<a href="http://wp-whois-proxy.sourceforge.net/whois_help.html">Help</a>	|
+<a href="http://wp-whois-proxy.sourceforge.net/whois_faq.html">FAQ</a>	|
+<a href="http://wp-whois-proxy.sourceforge.net/changes.html">CHANGES</a>	| 
+<a href="http://wp-whois-proxy.sourceforge.net/feedback.html">Contact</a>	|
+<a href="http://wp-whois-proxy.sourceforge.net/cgi-bin/gb.cgi">Guestbook</a>		
+</p>
+<hr style="clear:both; height:10px; background:#cfc;" />
+
+<div><a href="http://jigsaw.w3.org/css-validator/check/referer"><img class="Valid" src="/images/vcss.png"  alt="Valid CSS!" /></a><a href="http://validator.w3.org/check/referer"><img class="Valid" src="/images/vxml.png"  alt="Valid XHTML1.0!" /></a></div>
+<p id="cprt"><small>Last modified Oct 05, 2003<br />Copyright &copy; 2003 John Bro &lt;bro <small>(at)</small> users <small>(dot)</small> sourceforge <small>(dot)</small> net&gt;</small></p>
+</body></html>
